@@ -8967,7 +8967,7 @@ h1, h2, h3, h4, h5,
     bottom: 0;
     content: '';
     opacity: 0;
-    background: #3e64ff;
+    background: #c0e3d9;
     z-index: -1;
     -moz-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
@@ -8976,7 +8976,20 @@ h1, h2, h3, h4, h5,
     transition: all 0.3s ease; }
     @media (max-width: 767.98px) {
       .project .overlay {
-        opacity: .2; } }
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        content: '';
+        opacity: 0;
+        background: #c0e3d9;
+        z-index: -1;
+        -moz-transition: all 0.3s ease;
+        -o-transition: all 0.3s ease;
+        -webkit-transition: all 0.3s ease;
+        -ms-transition: all 0.3s ease;
+        transition: all 0.3s ease; } }
+
   .project .text {
     max-width: 80%;
     z-index: 1;
@@ -8989,9 +9002,9 @@ h1, h2, h3, h4, h5,
     .project .text h3 {
       font-size: 20px; }
       .project .text h3 a {
-        color: #fff; }
+        color: #000; }
     .project .text span {
-      color: rgba(255, 255, 255, 0.8);
+      color: rgb(0 0 0 / 80%);
       text-transform: uppercase;
       letter-spacing: 2px;
       font-size: 12px;

@@ -22,7 +22,7 @@ All text on the site (headline, summary, roles, dates, employment types, bullets
 ## Architecture
 
 - `index.html` — the whole single page: hero → stats → `#about` → `#resume` → `#projects` → `#contact`. Resume is a WAI-ARIA tabs widget (Experience / Skills / Education); each role is a native `<details>` element.
-- `case-study.html` (fintech) and `case-study-navy-care.html` — standalone case studies, linked from their project cards (fintech also from About). The ERP gets no case study: keep it a card, worded "multi-company ERP", never "multi-tenant SaaS". Same nav, theme script and `main.js`; its styles are the `.cs-*` block at the end of `style.css`.
+- `case-study.html` (fintech) and `case-study-navy-care.html` — standalone case studies, listed in the `#case-studies` section (nav "Case Studies") and linked from their project cards. A new case study needs a `.case` card there and the nav link on its page. The ERP gets no case study: keep it a card, worded "multi-company ERP", never "multi-tenant SaaS". Same nav, theme script and `main.js`; its styles are the `.cs-*` block at the end of `style.css`.
 - `assets/css/style.css` — hand-written "Soft Slate" theme; colors are CSS variables in `:root`. Mobile breakpoints at 900px and 760px.
 - `assets/js/main.js` — vanilla JS: nav shadow, mobile menu, scroll-reveal + count-up (IntersectionObserver), resume tabs with arrow-key navigation.
 - Elements with class `reveal` fade in on scroll. They are hidden only when `<html class="js">` is set (inline script in `<head>`), and `prefers-reduced-motion` disables all motion.

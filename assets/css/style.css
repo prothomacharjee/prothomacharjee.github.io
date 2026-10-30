@@ -79,7 +79,7 @@ p { margin: 0 0 1rem; color: var(--muted); }
 .nav { position: sticky; top: 0; z-index: 50; background: var(--nav-bg); backdrop-filter: blur(10px); transition: box-shadow .3s; }
 .nav.scrolled { box-shadow: 0 2px 16px rgba(30, 42, 58, .08); }
 .nav-in { display: flex; align-items: center; justify-content: space-between; height: 68px; }
-.brand { font-weight: 800; color: var(--ink); font-size: 1.05rem; }
+.brand { font-weight: 800; color: var(--ink); font-size: 1.05rem; white-space: nowrap; }
 .brand:hover { text-decoration: none; }
 .nav-links { display: flex; align-items: center; gap: 28px; }
 .nav-links a:not(.btn) { color: var(--muted); font-weight: 500; font-size: .95rem; }
@@ -214,6 +214,7 @@ p { margin: 0 0 1rem; color: var(--muted); }
 	.stats { grid-template-columns: repeat(2, 1fr); margin-top: -24px; }
 	.stats > div:nth-child(2) { border-right: 0; }
 	.stats > div:nth-child(-n+2) { border-bottom: 1px solid var(--bg); }
+	.nav-links { gap: 18px; }
 	.resume { grid-template-columns: 1fr; gap: 24px; }
 	.tabs { flex-direction: row; position: static; overflow-x: auto; }
 	.tabs button { white-space: nowrap; }
@@ -281,3 +282,14 @@ p { margin: 0 0 1rem; color: var(--muted); }
 	.cs-fig { padding: 12px; overflow-x: auto; }
 	.cs-fig svg { min-width: 620px; }
 }
+
+/* Case study list (home) */
+.cases { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.case { display: flex; flex-direction: column; background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px 28px 24px; color: inherit; transition: transform .3s, box-shadow .3s; }
+.case:hover { text-decoration: none; transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+.case > i { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; font-size: 1.4rem; color: var(--accent); background: linear-gradient(135deg, var(--accent-soft), var(--teal-soft)); margin-bottom: 18px; }
+.case-k { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-2); }
+.case h3 { font-size: 1.25rem; color: var(--ink); margin: 8px 0 10px; }
+.case p { font-size: .95rem; flex: 1; }
+.case-go { font-weight: 600; color: var(--accent); }
+@media (max-width: 760px) { .cases { grid-template-columns: 1fr; } }

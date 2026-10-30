@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Case Study: Moving Money Safely — Prothom Acharjee</title>
+	<meta name="description" content="How I designed the money-movement core of a fintech platform with 100,000 active users and ~100,000 transactions a day: ledger, safe withdrawals, webhooks and deposit matching.">
+	<meta name="author" content="Prothom Acharjee">
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://prothomacharjee.github.io/case-study.html">
+	<meta property="og:title" content="Case study: Moving money safely at 100,000 transactions a day">
+	<meta property="og:description" content="Ledger, safe withdrawals, webhook settlement and deposit matching on a Laravel fintech platform.">
+	<meta property="og:image" content="https://prothomacharjee.github.io/assets/image/og.png">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<meta name="twitter:card" content="summary_large_image">
+	<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f63c9'/%3E%3Ctext x='32' y='42' font-family='Arial' font-weight='700' font-size='26' fill='white' text-anchor='middle'%3EPA%3C/text%3E%3C/svg%3E">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="assets/css/style.css">
+	<script>
+		(function (d) {
+			d.classList.add('js');
+			var t; try { t = localStorage.getItem('theme'); } catch (e) {}
+			d.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+		})(document.documentElement);
+	</script>
+</head>
+<body>
+	<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+		<symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+		<symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+		<symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+		<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+	</svg>
+	<a class="skip" href="#main">Skip to content</a>
+
+	<header class="nav" id="top">
+		<div class="wrap nav-in">
+			<a class="brand" href="index.html">Prothom Acharjee</a>
+			<div class="nav-right">
+				<nav id="nav-links" class="nav-links">
+					<a href="index.html#about">About</a>
+					<a href="index.html#resume">Resume</a>
+					<a href="index.html#projects">Projects</a>
+					<a href="index.html#contact">Contact</a>
+					<a class="btn btn-p btn-sm" href="assets/Prothom_Acharjee_Resume.pdf" target="_blank" rel="noopener"><i aria-hidden="true"><svg class="ic"><use href="#i-download"/></svg></i> CV</a>
+				</nav>
+				<button class="theme-btn" aria-label="Toggle dark mode"><svg class="ic i-moon"><use href="#i-moon"/></svg><svg class="ic i-sun"><use href="#i-sun"/></svg></button>
+				<button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><span></span><span></span></button>
+			</div>
+		</div>
+	</header>
+
+	<main id="main" class="cs">
+		<header class="cs-head">
+			<div class="wrap cs-wrap">
+				<p class="eyebrow">Case study · Fintech</p>
+				<h1>Moving money safely at <span class="grad">100,000 transactions a day</span></h1>
+				<p class="lead">How I designed the money-movement core of a fintech platform: a transaction ledger, withdrawals that can't strand funds, webhook settlement that never drops a payment, and automatic matching of deposits against gateway records.</p>
+				<dl class="cs-meta">
+					<div><dt>Role</dt><dd>Senior Software Engineer, Softic</dd></div>
+					<div><dt>Period</dt><dd>2023 – present</dd></div>
+					<div><dt>Scale</dt><dd>100,000 active users · ~100,000 transactions a day</dd></div>
+					<div><dt>Stack</dt><dd>PHP 8.2 · Laravel 10 · Octane · Redis · PHPUnit</dd></div>
+				</dl>
+			</div>
+		</header>
+
+		<article class="wrap cs-wrap cs-body">
+			<p class="cs-note">The platform is private, so this page describes patterns and decisions, not product code or names. I've been on its backend team from the start, as a core developer of the transaction and money flow and the partner commission engine. The five decisions below I designed and built myself.</p>
+
+			<h2>The problem</h2>
+			<p>Users hold a wallet balance, top it up through two external payment providers (one crypto, one fiat, both behind a payment aggregator), move funds inside the platform, and withdraw. Every one of those steps crosses a boundary we don't control: a network call, a webhook that may arrive late, twice, or never, and users who double-click "Withdraw".</p>
+			<p>At around 100,000 transactions a day, plus the dependent transactions each one triggers, "rare" edge cases happen every day. The goal was simple to say and hard to do: <strong>every unit of money is accounted for, exactly once, even when something fails halfway.</strong></p>
+
+			<h2>Constraints</h2>
+			<ul>
+				<li><b>Untrusted timing.</b> Provider webhooks can be delayed, duplicated or lost.</li>
+				<li><b>Concurrency.</b> The same user can fire several requests at once, from several devices.</li>
+				<li><b>No downtime.</b> Changes shipped into a live system with real balances.</li>
+				<li><b>Small team.</b> The design had to be understandable and testable by everyone, not clever.</li>
+			</ul>
+
+			<figure class="cs-fig">
+				<svg viewBox="0 0 760 300" role="img" aria-labelledby="flow-t">
+					<title id="flow-t">Money flow: user requests pass through locks into the wallet and ledger; the platform calls the payment aggregator; provider webhooks and a 30-second matching job settle deposits.</title>
+					<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" class="f-ar"/></marker></defs>
+					<g class="f-box"><rect x="10" y="120" width="120" height="60" rx="10"/><text x="70" y="148">User</text><text x="70" y="166" class="f-s">deposit · withdraw</text></g>
+					<g class="f-box f-hi"><rect x="190" y="100" width="170" height="100" rx="10"/><text x="275" y="132">Platform API</text><text x="275" y="152" class="f-s">row locks · submit lock</text><text x="275" y="170" class="f-s">state checks</text></g>
+					<g class="f-box"><rect x="190" y="235" width="170" height="52" rx="10"/><text x="275" y="258">Wallet + Ledger</text><text x="275" y="275" class="f-s">double-entry, append-only</text></g>
+					<g class="f-box"><rect x="430" y="100" width="150" height="100" rx="10"/><text x="505" y="140">Payment</text><text x="505" y="160">aggregator</text></g>
+					<g class="f-box"><rect x="640" y="70" width="110" height="52" rx="10"/><text x="695" y="101">Crypto</text></g>
+					<g class="f-box"><rect x="640" y="178" width="110" height="52" rx="10"/><text x="695" y="209">Fiat</text></g>
+					<g class="f-box f-alt"><rect x="430" y="10" width="150" height="56" rx="10"/><text x="505" y="34">Webhooks</text><text x="505" y="52" class="f-s">verify · decrypt · settle</text></g>
+					<g class="f-box f-alt"><rect x="430" y="235" width="150" height="52" rx="10"/><text x="505" y="258">Matching job</text><text x="505" y="275" class="f-s">every 30 s</text></g>
+					<g class="f-ln">
+						<path d="M130 150H186"/>
+						<path d="M275 200v31"/>
+						<path d="M360 150h66"/>
+						<path d="M580 135l56-30"/>
+						<path d="M580 165l56 30"/>
+						<path d="M640 92 584 50"/>
+						<path d="M430 38H300v58"/>
+						<path d="M430 261h-66"/>
+						<path d="M505 235v-31" class="f-dash"/>
+					</g>
+				</svg>
+				<figcaption>Simplified money flow. Solid arrows move money; the dashed line is the matching job reading gateway records.</figcaption>
+			</figure>
+
+			<h2>Ground rules for every money operation</h2>
+			<p>Before any of the bigger pieces, every wallet operation follows the same rules, so duplicates and races are stopped at the database rather than hoped away:</p>
+			<ul>
+				<li>Read and check state <b>under a row-level lock</b>, never before it. A withdrawal checks the balance only after it holds the lock.</li>
+				<li>Lock rows in a <b>fixed order</b>, so two transfers between the same accounts can't deadlock each other.</li>
+				<li><b>Unique keys</b> on provider transaction IDs, so the same deposit can't be credited twice.</li>
+				<li>A short <b>Redis per-user submit lock</b> stops double-clicks before they reach the database.</li>
+				<li>A <b>balance-cap circuit breaker</b> and <b>one pending request per payment method</b> limit how far a bug or abuse can go.</li>
+			</ul>
+
+			<h2>Five design decisions</h2>
+
+			<section class="cs-d">
+				<h3><span>1</span> A double-entry, append-only ledger</h3>
+				<p><b>Problem.</b> A single balance column tells you <em>what</em> a user has, not <em>why</em>. When support asks "where did this amount come from?", you need history you can trust.</p>
+				<p><b>Choice.</b> Every movement is written as a balanced pair of debit and credit entries. Entries are immutable: corrections are new entries, never edits. Amounts use fixed-point decimals with 8 places, and a unique key on reference + account + direction makes each write idempotent. Opening balances are checked with exact decimal comparison, not floating point.</p>
+				<p><b>Trade-off.</b> More writes per transaction and more storage, in exchange for a full, provable history.</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>2</span> Ledger writes that fail safely</h3>
+				<p><b>Problem.</b> The ledger was added to a live system. If a ledger write failed, should the user's deposit fail too?</p>
+				<p><b>Choice.</b> No. The ledger writer catches its own failures and stores them for replay, so a ledger bug can never block a user's money movement. Failed writes are visible and can be replayed once fixed.</p>
+				<p><b>Trade-off.</b> The ledger can briefly lag the wallet, which is exactly why reconciliation matters (see "Status" below).</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>3</span> Withdrawals that can't strand funds</h3>
+				<p><b>Problem.</b> A withdrawal has two halves: debit the wallet locally and ask the provider to send money. If one half succeeds and the other fails, money is either lost or paid twice.</p>
+				<p><b>Choice.</b> The provider request is made inside the database transaction. If the provider rejects it, the local debit rolls back. If the provider accepts it but the local commit then fails, the platform sends a cancel request upstream for the orphaned withdrawal.</p>
+				<p><b>Trade-off.</b> The row lock is held during a network call, so timeouts must be tight. It was the simplest design that closed both failure windows; an outbox pattern is the next step (below).</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>4</span> Webhook settlement that never drops a payment</h3>
+				<p><b>Problem.</b> Deposits are confirmed by provider webhooks. A webhook that fails to process is a user who paid and didn't get credited.</p>
+				<p><b>Choice.</b> Each webhook is authenticated with a constant-time signature check and its encrypted payload is decrypted before anything is trusted. If processing fails, the endpoint still answers <code>202 Accepted</code> and records the failure for retry, so the provider doesn't hammer us and nothing is lost. Settlement is idempotent by provider transaction ID, so retries and duplicates are harmless.</p>
+				<p><b>Trade-off.</b> A failed webhook is our responsibility to retry, not the provider's, so failures have to be visible.</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>5</span> Automatic deposit matching every 30 seconds</h3>
+				<p><b>Problem.</b> Some webhooks never arrive at all. Without a backstop, those deposits sit "pending" until a user complains.</p>
+				<p><b>Choice.</b> A scheduled job runs every 30 seconds and matches pending deposits against the gateway's own records. Anything the gateway has completed gets settled through the same idempotent path as a webhook.</p>
+				<p><b>Trade-off.</b> Extra API calls to the gateway, in exchange for a missed webhook costing seconds instead of a support ticket.</p>
+			</section>
+
+			<h2>The partner commission engine</h2>
+			<p>Growth on the platform runs through partners: people who refer customers and can recruit sub-partners of their own. Every partner earns a share of the net revenue their customers generate, and a share of what their network earns. This is the part of the system with the most money rules, so it got the most care.</p>
+
+			<section class="cs-d">
+				<h3><span>A</span> A commission chain that can't overpay</h3>
+				<p><b>Problem.</b> A partner network is a tree of unknown depth. Paying every ancestor a fixed percentage would let total payouts grow with every level.</p>
+				<p><b>Choice.</b> Each partner has a rate, and a sub-partner's rate must sit at least 5 points below its parent's. When a customer generates revenue, the direct partner earns their rate, and each ancestor earns only the <em>spread</em> between its rate and its child's. The whole chain together never pays more than the top partner's rate, and the rate rules keep the tree shallow.</p>
+				<p><b>Trade-off.</b> Recruiting is limited by the rate floor, which is a business rule the product team had to agree to.</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>B</span> Revenue share with clawbacks</h3>
+				<p><b>Problem.</b> Revenue from a customer can go negative, for example after a large promotional payout. A commission system that only ever credits partners pays out money the platform never earned.</p>
+				<p><b>Choice.</b> Commission is calculated on <em>net</em> revenue. When it turns negative, the same rate is debited from the partner, their balance can go below zero, and the deficit carries into the next cycle.</p>
+				<p><b>Trade-off.</b> Partners can see a negative balance, so the dashboard has to explain it clearly.</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>C</span> Exactly-once commissions from large batches</h3>
+				<p><b>Problem.</b> Commissions are calculated from large batches of transaction records from product partners. A crash halfway through must not pay anyone twice or skip anyone.</p>
+				<p><b>Choice.</b> Records are processed in chunks of 500, with everything a chunk needs loaded up front to avoid per-row queries. Each row runs in its own savepoint, and the row is marked as processed in that same savepoint, so one bad row rolls back alone and a rerun skips finished rows. Every wallet change goes through one helper that takes a row lock and writes the matching ledger entries.</p>
+				<p><b>Trade-off.</b> Savepoints add some database overhead, which is cheap compared with reconciling a half-applied batch by hand.</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>D</span> Partner tiers and weekly payouts</h3>
+				<p><b>Problem.</b> Partners move between tiers with different rates, and they're paid weekly. Both need to be automatic, fair and auditable.</p>
+				<p><b>Choice.</b> A job runs every 3 minutes and moves a partner up one tier only when they meet both targets: active customers and peak commission. The peak is a high-water mark, so spending earnings never causes a demotion. Downgrades depend only on active customers and never go below a floor. Every change is logged, and repair commands can run as a dry run first. Payouts run daily for partners who are due: each partner is paid in its own transaction, with a compliance check and a minimum amount (smaller balances carry over). Payouts are approved automatically or by an admin, and a reversal posts its own refund entries.</p>
+				<p><b>Trade-off.</b> A 3-minute delay on tier changes, in exchange for a simple job that can't run twice at once.</p>
+			</section>
+
+			<h2>Status, honestly</h2>
+			<p>The platform runs in production for about 100,000 active users and around 100,000 transactions a day. The wallet rules, withdrawals, webhook handling and 30-second matching are all live.</p>
+			<p>Ledger writes have been paused since May 2026 and some ledger tests still fail, so live balances still come from the wallet itself, and the scheduled ledger reconciliation isn't switched on yet. I'd rather say that here than have it come up later.</p>
+
+			<h2>What I'd do next</h2>
+			<ul>
+				<li>Fix the ledger tests, turn ledger writes back on, and schedule reconciliation between wallet and ledger.</li>
+				<li>Store live balances as fixed-point decimals, matching the ledger.</li>
+				<li>Move provider calls out of the database transaction with an outbox, so no lock waits on the network.</li>
+				<li>Accept client idempotency keys on money endpoints, on top of the server-side guards.</li>
+				<li>Enforce per-user daily and monthly limits, not only the balance cap.</li>
+				<li>Add automated tests for the commission chain and tier rules, and a unique key on commission records as a second line of defence.</li>
+			</ul>
+
+			<div class="cs-end">
+				<p>Want to talk about systems like this?</p>
+				<a class="btn btn-p" href="mailto:me.prothomacharjee@gmail.com"><i aria-hidden="true"><svg class="ic"><use href="#i-mail"/></svg></i> Email me</a>
+				<a class="btn btn-s" href="index.html#projects">Back to projects</a>
+			</div>
+		</article>
+	</main>
+
+	<footer class="foot">
+		<div class="wrap">© <span id="year">2026</span> Prothom Acharjee</div>
+	</footer>
+
+	<script src="assets/js/main.js"></script>
+</body>
+</html>

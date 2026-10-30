@@ -11,6 +11,13 @@
 	window.addEventListener('scroll', onScroll, { passive: true });
 	onScroll();
 
+	// Theme toggle (initial theme is set inline in <head>)
+	document.querySelector('.theme-btn').addEventListener('click', function () {
+		var root = document.documentElement;
+		root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+		try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {}
+	});
+
 	// Mobile menu
 	var toggle = document.querySelector('.nav-toggle');
 	var links = document.getElementById('nav-links');

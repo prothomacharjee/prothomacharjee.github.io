@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Case Study: Navy Care — Prothom Acharjee</title>
+	<meta name="description" content="How I built Navy Care alone during the 2020 lockdown: a telemedicine and outpatient system running in three Bangladesh Navy hospitals.">
+	<meta name="author" content="Prothom Acharjee">
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://prothomacharjee.github.io/case-study-navy-care.html">
+	<meta property="og:title" content="Case study: Navy Care, a hospital system built solo in a lockdown">
+	<meta property="og:description" content="Self-service check-in, daily queues, remote consultations and digital prescriptions for three Bangladesh Navy hospitals.">
+	<meta property="og:image" content="https://prothomacharjee.github.io/assets/image/og.png">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<meta name="twitter:card" content="summary_large_image">
+	<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f63c9'/%3E%3Ctext x='32' y='42' font-family='Arial' font-weight='700' font-size='26' fill='white' text-anchor='middle'%3EPA%3C/text%3E%3C/svg%3E">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="assets/css/style.css">
+	<script>
+		(function (d) {
+			d.classList.add('js');
+			var t; try { t = localStorage.getItem('theme'); } catch (e) {}
+			d.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+		})(document.documentElement);
+	</script>
+</head>
+<body>
+	<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+		<symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+		<symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+		<symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+		<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+	</svg>
+	<a class="skip" href="#main">Skip to content</a>
+
+	<header class="nav" id="top">
+		<div class="wrap nav-in">
+			<a class="brand" href="index.html">Prothom Acharjee</a>
+			<div class="nav-right">
+				<nav id="nav-links" class="nav-links">
+					<a href="index.html#about">About</a>
+					<a href="index.html#resume">Resume</a>
+					<a href="index.html#projects">Projects</a>
+					<a href="index.html#contact">Contact</a>
+					<a class="btn btn-p btn-sm" href="assets/Prothom_Acharjee_Resume.pdf" target="_blank" rel="noopener"><i aria-hidden="true"><svg class="ic"><use href="#i-download"/></svg></i> CV</a>
+				</nav>
+				<button class="theme-btn" aria-label="Toggle dark mode"><svg class="ic i-moon"><use href="#i-moon"/></svg><svg class="ic i-sun"><use href="#i-sun"/></svg></button>
+				<button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><span></span><span></span></button>
+			</div>
+		</div>
+	</header>
+
+	<main id="main" class="cs">
+		<header class="cs-head">
+			<div class="wrap cs-wrap">
+				<p class="eyebrow">Case study · Healthcare</p>
+				<h1>Navy Care: a hospital system <span class="grad">built solo in a lockdown</span></h1>
+				<p class="lead">How I designed and built, as the only developer, a telemedicine and outpatient system that has run in three Bangladesh Navy hospitals since 2020: self-service check-in, daily queues, remote consultations, and prescriptions that follow the patient to the pharmacy and the lab.</p>
+				<dl class="cs-meta">
+					<div><dt>Role</dt><dd>Sole developer (SoftSource)</dd></div>
+					<div><dt>Period</dt><dd>Feb – Aug 2020, maintained since</dd></div>
+					<div><dt>Scale</dt><dd>3 Navy hospitals · one installation · open to all Navy personnel and families</dd></div>
+					<div><dt>Stack</dt><dd>PHP · CodeIgniter 3 · MySQL · Bootstrap · jQuery · Android WebView</dd></div>
+				</dl>
+			</div>
+		</header>
+
+		<article class="wrap cs-wrap cs-body">
+			<p class="cs-note">The system runs on the hospitals' internal network, so there's no public demo. This page describes the design, not patient data or internal details.</p>
+
+			<h2>The problem</h2>
+			<p>In early 2020, the COVID lockdown made it hard for Navy personnel and their families to see a doctor. The Navy's hospitals needed a way to consult patients remotely, and at the same time keep the in-person outpatient flow moving without crowded waiting rooms.</p>
+			<p>The ask was a full system: registration, appointments, consultations, prescriptions, pharmacy and lab. It had to be ready within months, built by one person.</p>
+
+			<h2>Constraints</h2>
+			<ul>
+				<li><b>One developer.</b> Every part, from the database to the printed slips, was mine to design, build and deploy.</li>
+				<li><b>Internal network.</b> The system runs inside the hospitals' network, not on the public internet.</li>
+				<li><b>Every kind of user.</b> Doctors, pharmacists, lab staff and patients of all ages, many on low-cost Android phones.</li>
+				<li><b>Three hospitals, one developer.</b> Updates had to reach every site without a separate install for each.</li>
+			</ul>
+
+			<figure class="cs-fig">
+				<svg viewBox="0 0 760 170" role="img" aria-labelledby="nc-t">
+					<title id="nc-t">Patient journey: check-in at a kiosk or phone, a daily department queue, consultation by chat or phone, a prescription PDF, then pharmacy and lab.</title>
+					<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" class="f-ar"/></marker></defs>
+					<g class="f-box"><rect x="10" y="55" width="120" height="60" rx="10"/><text x="70" y="82">Check-in</text><text x="70" y="100" class="f-s">kiosk · phone</text></g>
+					<g class="f-box"><rect x="160" y="55" width="120" height="60" rx="10"/><text x="220" y="82">Queue</text><text x="220" y="100" class="f-s">daily token</text></g>
+					<g class="f-box f-hi"><rect x="310" y="55" width="140" height="60" rx="10"/><text x="380" y="82">Consultation</text><text x="380" y="100" class="f-s">chat · phone</text></g>
+					<g class="f-box"><rect x="480" y="55" width="120" height="60" rx="10"/><text x="540" y="82">Prescription</text><text x="540" y="100" class="f-s">PDF · barcode</text></g>
+					<g class="f-box f-alt"><rect x="635" y="10" width="115" height="52" rx="10"/><text x="692" y="41">Pharmacy</text></g>
+					<g class="f-box f-alt"><rect x="635" y="108" width="115" height="52" rx="10"/><text x="692" y="139">Lab</text></g>
+					<g class="f-ln">
+						<path d="M130 85h26"/>
+						<path d="M280 85h26"/>
+						<path d="M450 85h26"/>
+						<path d="M600 75l31-24"/>
+						<path d="M600 95l31 24"/>
+					</g>
+				</svg>
+				<figcaption>One prescription record follows the patient from the doctor to the pharmacy and the lab.</figcaption>
+			</figure>
+
+			<h2>Five design decisions</h2>
+
+			<section class="cs-d">
+				<h3><span>1</span> One installation for three hospitals</h3>
+				<p><b>Problem.</b> Three hospitals, each with its own departments and letterhead, and one developer to keep them all up to date.</p>
+				<p><b>Choice.</b> A single installation and database. Each hospital is a record, departments belong to a hospital, and staff accounts are tied to their hospital. Printed documents use the right hospital's details automatically.</p>
+				<p><b>Trade-off.</b> One central server to look after, in exchange for every update reaching all three hospitals at once.</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>2</span> Self-service check-in and a daily queue</h3>
+				<p><b>Problem.</b> Crowded front desks were exactly what the lockdown was trying to avoid.</p>
+				<p><b>Choice.</b> A self-service kiosk where patients find their record, pick a department and get a printed slip with a token number and a barcode. Tokens restart every day for each department, and a patient can hold only one pending appointment per department per day. A display screen in the waiting area cycles through the queue with a sound alert, and doctors see their queue refresh every few seconds.</p>
+				<p><b>Trade-off.</b> The screens poll the server instead of using a live connection: simpler to build and run on an internal network, at the cost of a few seconds' delay.</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>3</span> Consultations by chat and phone, not video</h3>
+				<p><b>Problem.</b> Remote consultations had to work for every patient, on any phone, over whatever connection they had.</p>
+				<p><b>Choice.</b> Each appointment has its own chat thread, where patients and doctors can share photos and documents, plus a one-tap phone call. Doctors mark themselves available, and patients see who is online in each department.</p>
+				<p><b>Trade-off.</b> No video, in exchange for something that works reliably for everyone on low bandwidth.</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>4</span> A prescription that travels with the patient</h3>
+				<p><b>Problem.</b> Paper prescriptions get lost, are hard to read, and leave the pharmacy and lab with no record.</p>
+				<p><b>Choice.</b> Doctors write structured prescriptions with autocomplete for complaints, diagnoses, tests and medicines, and can add new terms as they go. The system produces a PDF with the doctor's signature and a barcode and posts it into the chat. The pharmacy looks up the prescription and marks each medicine as dispensed; the lab looks it up and uploads results against each test.</p>
+				<p><b>Trade-off.</b> Structured entry takes doctors a little longer to learn than free text, but it gives the pharmacy and lab a record they can act on.</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>5</span> An Android app as a WebView wrapper</h3>
+				<p><b>Problem.</b> Patients wanted an app, and one developer can't maintain a web system and a separate native app at the same time.</p>
+				<p><b>Choice.</b> The Android app wraps the mobile-friendly website in a WebView, so every feature ships to web and Android at once.</p>
+				<p><b>Trade-off.</b> No offline mode or push notifications, in exchange for shipping on time and keeping one codebase.</p>
+			</section>
+
+			<h2>Results</h2>
+			<p>Navy Care went live in 2020 and still runs in three Bangladesh Navy hospitals, open to all Navy personnel and their families. It covers the whole outpatient journey: registration, appointments, consultations, prescriptions, pharmacy, lab and admission records, with printable reports for each department. I've maintained it since launch, with updates such as one-time-password login for doctors, and the hospitals renew it every year.</p>
+
+			<h2>What I'd do next</h2>
+			<ul>
+				<li>Replace polling with live updates (WebSockets) for queues and chat.</li>
+				<li>Add a proper API and a native app with push notifications and offline support.</li>
+				<li>Add video consultations where the connection allows.</li>
+				<li>Move to Laravel with automated tests, and run a full security hardening pass.</li>
+			</ul>
+
+			<div class="cs-end">
+				<p>Want to talk about systems like this?</p>
+				<a class="btn btn-p" href="mailto:me.prothomacharjee@gmail.com"><i aria-hidden="true"><svg class="ic"><use href="#i-mail"/></svg></i> Email me</a>
+				<a class="btn btn-s" href="index.html#projects">Back to projects</a>
+			</div>
+		</article>
+	</main>
+
+	<footer class="foot">
+		<div class="wrap">© <span id="year">2026</span> Prothom Acharjee</div>
+	</footer>
+
+	<script src="assets/js/main.js"></script>
+</body>
+</html>

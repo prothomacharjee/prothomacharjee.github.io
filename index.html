@@ -23,7 +23,7 @@
 		(function (d) {
 			d.classList.add('js');
 			var t; try { t = localStorage.getItem('theme'); } catch (e) {}
-			d.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+			d.dataset.theme = t || 'light';
 		})(document.documentElement);
 	</script>
 </head>

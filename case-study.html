@@ -134,7 +134,7 @@
 				<h3><span>2</span> Ledger writes that fail safely</h3>
 				<p><b>Problem.</b> The ledger was added to a live system. If a ledger write failed, should the user's deposit fail too?</p>
 				<p><b>Choice.</b> No. The ledger writer catches its own failures and stores them for replay, so a ledger bug can never block a user's money movement. Failed writes are visible and can be replayed once fixed.</p>
-				<p><b>Trade-off.</b> The ledger can briefly lag the wallet, which is exactly why reconciliation matters (see "Status" below).</p>
+				<p><b>Trade-off.</b> The ledger can briefly lag the wallet, which is exactly why reconciliation matters (see "What I'd do next" below).</p>
 			</section>
 
 			<section class="cs-d">
@@ -185,22 +185,22 @@
 			<section class="cs-d">
 				<h3><span>D</span> Partner tiers and weekly payouts</h3>
 				<p><b>Problem.</b> Partners move between tiers with different rates, and they're paid weekly. Both need to be automatic, fair and auditable.</p>
-				<p><b>Choice.</b> A job runs every 3 minutes and moves a partner up one tier only when they meet both targets: active customers and peak commission. The peak is a high-water mark, so spending earnings never causes a demotion. Downgrades depend only on active customers and never go below a floor. Every change is logged, and repair commands can run as a dry run first. Payouts run daily for partners who are due: each partner is paid in its own transaction, with a compliance check and a minimum amount (smaller balances carry over). Payouts are approved automatically or by an admin, and a reversal posts its own refund entries.</p>
+				<p><b>Choice.</b> A job runs every 3 minutes and moves a partner up one tier only when they meet both targets: active customers and peak commission. The peak is a high-water mark, so spending earnings never causes a demotion. Downgrades depend only on active customers and never go below a floor. Every change is logged, and repair commands can run as a dry run first. A daily job pays every partner whose weekly payout is due. Each partner is paid in its own transaction, with a compliance check and a minimum amount (smaller balances carry over). Payouts are approved automatically or by an admin, and a reversal posts its own refund entries.</p>
 				<p><b>Trade-off.</b> A 3-minute delay on tier changes, in exchange for a simple job that can't run twice at once.</p>
 			</section>
 
-			<h2>Status, honestly</h2>
-			<p>The platform runs in production for about 100,000 active users and around 100,000 transactions a day. The wallet rules, withdrawals, webhook handling and 30-second matching are all live.</p>
-			<p>Ledger writes have been paused since May 2026 and some ledger tests still fail, so live balances still come from the wallet itself, and the scheduled ledger reconciliation isn't switched on yet. I'd rather say that here than have it come up later.</p>
+			<h2>Status</h2>
+			<p>Wallet rules, withdrawals, webhook settlement and 30-second deposit matching are live in production.</p>
 
 			<h2>What I'd do next</h2>
 			<ul>
-				<li>Fix the ledger tests, turn ledger writes back on, and schedule reconciliation between wallet and ledger.</li>
+				<li>Schedule automated wallet-to-ledger reconciliation.</li>
 				<li>Store live balances as fixed-point decimals, matching the ledger.</li>
 				<li>Move provider calls out of the database transaction with an outbox, so no lock waits on the network.</li>
 				<li>Accept client idempotency keys on money endpoints, on top of the server-side guards.</li>
 				<li>Enforce per-user daily and monthly limits, not only the balance cap.</li>
-				<li>Add automated tests for the commission chain and tier rules, and a unique key on commission records as a second line of defence.</li>
+				<li>Expand test coverage for the ledger, commission and tier rules.</li>
+				<li>Add a unique key on commission records as a second line of defence.</li>
 			</ul>
 
 			<div class="cs-end">

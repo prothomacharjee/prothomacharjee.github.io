@@ -275,12 +275,12 @@ p { margin: 0 0 1rem; color: var(--muted); }
 }
 
 /* Case study list (home) */
-.cases { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.cases { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
 .case { display: flex; flex-direction: column; background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px 28px 24px; color: inherit; transition: transform .3s, box-shadow .3s; }
 .case:hover { text-decoration: none; transform: translateY(-5px); box-shadow: var(--shadow-lg); }
 .case > i { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; font-size: 1.4rem; color: var(--accent); background: linear-gradient(135deg, var(--accent-soft), var(--teal-soft)); margin-bottom: 18px; }
 .case-k { font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-2); }
 .case h3 { font-size: 1.25rem; color: var(--ink); margin: 8px 0 10px; }
 .case p { font-size: .95rem; flex: 1; }
-.case-go { font-weight: 600; color: var(--accent); }
-@media (max-width: 760px) { .cases { grid-template-columns: 1fr; } }
+.case-go { margin-top: auto; font-weight: 600; color: var(--accent); }
+@media (max-width: 959px) { .cases { grid-template-columns: 1fr; } }

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Case Study: Padma — Prothom Acharjee</title>
+	<meta name="description" content="How Padma, an in-house no-code platform at Genuine Technology, turned drag-and-drop designs into working pages, database tables, embeds and APIs.">
+	<meta name="author" content="Prothom Acharjee">
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://prothomacharjee.github.io/case-study-padma.html">
+	<meta property="og:title" content="Case study: Padma, a no-code platform for business systems">
+	<meta property="og:description" content="Designs saved as data, forms that build their own tables, and pages that reach beyond the app through embeds, APIs and surveys.">
+	<meta property="og:image" content="https://prothomacharjee.github.io/assets/image/og.png">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<meta name="twitter:card" content="summary_large_image">
+	<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234f63c9'/%3E%3Ctext x='32' y='42' font-family='Arial' font-weight='700' font-size='26' fill='white' text-anchor='middle'%3EPA%3C/text%3E%3C/svg%3E">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="assets/css/style.css">
+	<script>
+		(function (d) {
+			d.classList.add('js');
+			var t; try { t = localStorage.getItem('theme'); } catch (e) {}
+			d.dataset.theme = t || 'light';
+		})(document.documentElement);
+	</script>
+</head>
+<body>
+	<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+		<symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+		<symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+		<symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+		<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+	</svg>
+	<a class="skip" href="#main">Skip to content</a>
+
+	<header class="nav" id="top">
+		<div class="wrap nav-in">
+			<a class="brand" href="index.html">Prothom Acharjee</a>
+			<div class="nav-right">
+				<nav id="nav-links" class="nav-links">
+					<a href="index.html#about">About</a>
+					<a href="index.html#resume">Resume</a>
+					<a href="index.html#case-studies">Case Studies</a>
+					<a href="index.html#projects">Projects</a>
+					<a href="index.html#contact">Contact</a>
+					<a class="btn btn-p btn-sm" href="assets/Prothom_Acharjee_Resume.pdf" target="_blank" rel="noopener"><i aria-hidden="true"><svg class="ic"><use href="#i-download"/></svg></i> CV</a>
+				</nav>
+				<button class="theme-btn" aria-label="Toggle dark mode"><svg class="ic i-moon"><use href="#i-moon"/></svg><svg class="ic i-sun"><use href="#i-sun"/></svg></button>
+				<button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><span></span><span></span></button>
+			</div>
+		</div>
+	</header>
+
+	<main id="main" class="cs">
+		<header class="cs-head">
+			<div class="wrap cs-wrap">
+				<p class="eyebrow">Case study · No-code platform</p>
+				<h1>Padma: business systems <span class="grad">without writing code</span></h1>
+				<p class="lead">How we built an in-house no-code platform at Genuine Technology for building enterprise systems like HR, payroll and ERP: drag-and-drop pages saved as data, forms that create their own database tables, and pages that can be embedded, called as APIs or sent out as surveys.</p>
+				<dl class="cs-meta">
+					<div><dt>Role</dt><dd>Programmer, core platform team (Genuine Technology)</dd></div>
+					<div><dt>Period</dt><dd>2021 – 2023</dd></div>
+					<div><dt>My part</dt><dd>Data handlers · data binders · entity builders · charts · embedding</dd></div>
+					<div><dt>Stack</dt><dd>.NET Core (C#) · ASP.NET MVC · MSSQL · Entity Framework · Microsoft Azure · jQuery</dd></div>
+				</dl>
+			</div>
+		</header>
+
+		<article class="wrap cs-wrap cs-body">
+			<p class="cs-note">Padma was an in-house platform and was never released publicly, so there's no live demo. This page describes the design, not code or client data.</p>
+
+			<h2>The problem</h2>
+			<p>Genuine Technology builds HR, payroll, accounts and ERP systems for many clients, and each one wants its own forms, fields and reports. Building every screen by hand meant the same work over and over: a table, a form to fill it, a list to browse it, an export, a report.</p>
+			<p>Padma's goal was to let the team, and eventually clients, build those screens in a visual designer instead, and have the platform take care of the database, the data binding and the rendering.</p>
+
+			<h2>Constraints</h2>
+			<ul>
+				<li><b>Real business data.</b> A designed form wasn't a mock-up: it had to store, validate and relate real records, including master and detail entries.</li>
+				<li><b>Many organizations.</b> Each business using Padma needed its own apps and data, kept apart from everyone else's.</li>
+				<li><b>Change without redeploys.</b> Adding a field or a page had to take effect without shipping new code.</li>
+				<li><b>Data outside the app.</b> Pages and data had to be usable from other websites and systems, not only inside Padma.</li>
+			</ul>
+
+			<figure class="cs-fig">
+				<svg viewBox="0 0 760 200" role="img" aria-labelledby="pd-t">
+					<title id="pd-t">Saving a design in the Studio writes three things: the app registry, the database tables, and a page definition. A runtime renderer reads the definition and data to serve app pages, embeds and surveys.</title>
+					<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" class="f-ar"/></marker></defs>
+					<g class="f-box"><rect x="10" y="70" width="120" height="60" rx="10"/><text x="70" y="97">Studio</text><text x="70" y="115" class="f-s">drag-and-drop</text></g>
+					<g class="f-box"><rect x="170" y="10" width="150" height="52" rx="10"/><text x="245" y="33">Registry</text><text x="245" y="50" class="f-s">apps · modules · pages</text></g>
+					<g class="f-box"><rect x="170" y="74" width="150" height="52" rx="10"/><text x="245" y="97">Tables</text><text x="245" y="114" class="f-s">created · altered</text></g>
+					<g class="f-box"><rect x="170" y="138" width="150" height="52" rx="10"/><text x="245" y="161">Page definition</text><text x="245" y="178" class="f-s">layout · bindings</text></g>
+					<g class="f-box f-hi"><rect x="360" y="70" width="150" height="60" rx="10"/><text x="435" y="97">Renderer</text><text x="435" y="115" class="f-s">at runtime</text></g>
+					<g class="f-box f-alt"><rect x="560" y="10" width="150" height="52" rx="10"/><text x="635" y="41">App pages</text></g>
+					<g class="f-box f-alt"><rect x="560" y="74" width="150" height="52" rx="10"/><text x="635" y="105">Embeds</text></g>
+					<g class="f-box f-alt"><rect x="560" y="138" width="150" height="52" rx="10"/><text x="635" y="169">Surveys</text></g>
+					<g class="f-ln">
+						<path d="M130 90l36-48"/>
+						<path d="M130 100h36"/>
+						<path d="M130 110l36 48"/>
+						<path d="M320 100h36"/>
+						<path d="M320 164l38-40"/>
+						<path d="M510 90l46-46"/>
+						<path d="M510 100h46"/>
+						<path d="M510 110l46 46"/>
+					</g>
+				</svg>
+				<figcaption>One save in the Studio produces everything the renderer needs to serve the page.</figcaption>
+			</figure>
+
+			<h2>Six design decisions</h2>
+
+			<section class="cs-d">
+				<h3><span>1</span> Pages saved as data, rendered at runtime</h3>
+				<p><b>Problem.</b> Generating code for every designed page would mean a build and a deploy for every change.</p>
+				<p><b>Choice.</b> The Studio saves each page as a structured definition: its components, their position, captions, fields and data bindings. A separate client app reads that definition and builds the forms, tables and dashboards on the fly, so a saved change shows up on the next page load. Saved designs can be reopened in an edit mode and changed later.</p>
+				<p><b>Trade-off.</b> The renderer does more work on each page load, and bugs are harder to trace because the page only exists at runtime. In exchange, nobody needs a developer to add a field.</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>2</span> Forms that build their own tables</h3>
+				<p><b>Problem.</b> A no-code form is useless if a developer still has to create the table behind it.</p>
+				<p><b>Choice.</b> An entity builder turns the fields on a form into database tables and columns, creating new ones on first save and altering them when the design changes. Users can also bind a form to a table that already exists. The platform records how tables relate, so a master-detail form can follow those links, even several levels deep, and save the parent and its child rows together.</p>
+				<p><b>Trade-off.</b> The schema follows the designer, so renaming or removing fields on a table with live data needs care. We accepted that to make "draw a form, get a working table" possible.</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>3</span> One save, all or nothing</h3>
+				<p><b>Problem.</b> A save touches three places: the registry of apps, modules and pages, the database tables, and the page definition. If one fails halfway, the page breaks.</p>
+				<p><b>Choice.</b> All three steps run inside one transaction. The page definition is written last, and the transaction commits only after that write succeeds; any failure rolls the whole save back.</p>
+				<p><b>Trade-off.</b> A failed save means starting again, but there are no half-saved pages pointing at tables that don't exist.</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>4</span> Each organization gets its own space</h3>
+				<p><b>Problem.</b> Many businesses build apps on the same platform, and their tables and data must never mix.</p>
+				<p><b>Choice.</b> Each organization gets a unique key when it signs up. Its tables, its record of table relationships and its apps are all scoped to that key, and every lookup in the Studio only shows that organization's tables.</p>
+				<p><b>Trade-off.</b> The platform enforces the separation, not separate databases. It's cheaper to run and simpler to back up, but the code has to get the scoping right everywhere.</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>5</span> Components bind to data, not just display it</h3>
+				<p><b>Problem.</b> Business screens are more than text boxes: they need dropdowns filled from other tables, calculated values, filtered lists and charts.</p>
+				<p><b>Choice.</b> Data handlers and data binders let each component pick its source: a table, a related table or a saved query. Dropdowns fill from other tables or a manual list, table columns can be computed, lists can be filtered by criteria, and dashboards place charts on a grid, each fed by its own query. A flexible content area lets designers mix free-form content with these components on one page.</p>
+				<p><b>Trade-off.</b> Letting designers write queries is powerful but needs trust and review; it suits an in-house team better than anonymous end users.</p>
+			</section>
+
+			<section class="cs-d">
+				<h3><span>6</span> Pages and data that reach beyond the app</h3>
+				<p><b>Problem.</b> Clients wanted Padma forms on their own websites, and other systems needed to read and write Padma data.</p>
+				<p><b>Choice.</b> Any page can get an embed link with its own unguessable ID and a stripped-down layout, ready to drop into another site. An API builder maps an endpoint name to a table or saved query and serves it for reading, adding, updating and deleting records. Surveys get public links and accept file uploads, and any table can be exported to CSV or Excel or filled from an uploaded file, with the headers checked against the table first.</p>
+				<p><b>Trade-off.</b> Every way in is another thing to secure and keep working, but it meant Padma data didn't stay locked inside Padma.</p>
+			</section>
+
+			<h2>Results</h2>
+			<p>Padma stayed an in-house platform and was never released publicly. Inside the company it let the team design data-backed forms, master-detail entries, reports, dashboards and surveys without hand-writing each screen. I built core components of it, including data handlers, data binders, entity builders, chart components, the flexible content area and embedding, and I trained in-house developers to build on the platform.</p>
+
+			<h2>What I'd do next</h2>
+			<ul>
+				<li>Run every generated query through parameters and a strict allowlist, and add tests for the query builder.</li>
+				<li>Version page definitions, so a design change can be previewed, migrated and rolled back.</li>
+				<li>Put generated APIs and embeds behind proper API keys, scopes and rate limits.</li>
+				<li>Show a preview of the database change before a schema-altering save goes through.</li>
+			</ul>
+
+			<div class="cs-end">
+				<p>Want to talk about systems like this?</p>
+				<a class="btn btn-p" href="mailto:me.prothomacharjee@gmail.com"><i aria-hidden="true"><svg class="ic"><use href="#i-mail"/></svg></i> Email me</a>
+				<a class="btn btn-s" href="index.html#projects">Back to projects</a>
+			</div>
+		</article>
+	</main>
+
+	<footer class="foot">
+		<div class="wrap">© <span id="year">2026</span> Prothom Acharjee</div>
+	</footer>
+
+	<script src="assets/js/main.js"></script>
+</body>
+</html>

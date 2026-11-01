@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Case Study: Moving Money Safely — Prothom Acharjee</title>
-	<meta name="description" content="How I designed the money-movement core of a fintech platform with 100,000 active users and ~100,000 transactions a day: ledger, safe withdrawals, webhooks and deposit matching.">
+	<meta name="description" content="How I designed the money-movement core of a fintech platform with 100,000 active users, ~100,000 transactions and ~1 million ledger, bonus and commission entries a day: ledger, safe withdrawals, webhooks and deposit matching.">
 	<meta name="author" content="Prothom Acharjee">
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="https://prothomacharjee.github.io/case-study.html">
@@ -63,7 +63,7 @@
 				<dl class="cs-meta">
 					<div><dt>Role</dt><dd>Senior Software Engineer, Softic</dd></div>
 					<div><dt>Period</dt><dd>2023 – present</dd></div>
-					<div><dt>Scale</dt><dd>100,000 active users · ~100,000 transactions a day</dd></div>
+					<div><dt>Scale</dt><dd>100,000 active users · ~100,000 transactions a day · ~1 million ledger, bonus and commission entries a day</dd></div>
 					<div><dt>Stack</dt><dd>PHP 8.2 · Laravel 10 · Octane · Redis · PHPUnit</dd></div>
 				</dl>
 			</div>
@@ -74,7 +74,7 @@
 
 			<h2>The problem</h2>
 			<p>Users hold a wallet balance, top it up through two external payment providers (one crypto, one fiat, both behind a payment aggregator), move funds inside the platform, and withdraw. Every one of those steps crosses a boundary we don't control: a network call, a webhook that may arrive late, twice, or never, and users who double-click "Withdraw".</p>
-			<p>At around 100,000 transactions a day, plus the dependent transactions each one triggers, "rare" edge cases happen every day. The goal was simple to say and hard to do: <strong>every unit of money is accounted for, exactly once, even when something fails halfway.</strong></p>
+			<p>Around 100,000 transactions a day is only the visible part. Each one also writes its double-entry ledger entries and can trigger bonus, commission and affiliate entries, so the system records about 1 million money entries a day, and every one of them has to land exactly once and agree with the others. At that volume, "rare" edge cases happen every day, like a transaction that settles while one of its follow-on entries fails, or a retry that writes the ledger twice. The goal was simple to say and hard to do: <strong>every unit of money is accounted for, exactly once, even when something fails halfway.</strong></p>
 
 			<h2>Constraints</h2>
 			<ul>

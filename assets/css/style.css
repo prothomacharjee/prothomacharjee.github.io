@@ -225,6 +225,11 @@ p, .role li, .cs-body li { text-align: justify; -webkit-hyphens: auto; hyphens: 
 	.proj-more .pc { flex-basis: 100%; }
 	.role summary { grid-template-columns: 1fr; }
 }
+/* small phones: "600–800" at full size is wider than half the stats row */
+@media (max-width: 420px) {
+	.stats > div { padding: 20px 10px; }
+	.stats b { font-size: 1.5rem; }
+}
 
 /* Recommendations */
 .quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }

@@ -5,7 +5,6 @@
 
 	document.getElementById('year').textContent = new Date().getFullYear();
 
-	// Sticky nav shadow
 	var nav = document.querySelector('.nav');
 	function onScroll() { nav.classList.toggle('scrolled', window.scrollY > 8); }
 	window.addEventListener('scroll', onScroll, { passive: true });
@@ -18,7 +17,6 @@
 		try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {}
 	});
 
-	// Mobile menu
 	var toggle = document.querySelector('.nav-toggle');
 	var links = document.getElementById('nav-links');
 	function setMenu(open) {
@@ -28,7 +26,6 @@
 	toggle.addEventListener('click', function () { setMenu(toggle.getAttribute('aria-expanded') !== 'true'); });
 	links.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
 
-	// Count-up numbers
 	function countUp(el) {
 		var end = +el.dataset.count;
 		if (reduceMotion) return;
@@ -42,7 +39,6 @@
 		requestAnimationFrame(step);
 	}
 
-	// Scroll reveal
 	var items = document.querySelectorAll('.reveal');
 	if (!('IntersectionObserver' in window)) {
 		items.forEach(function (el) { el.classList.add('in'); });
@@ -61,7 +57,6 @@
 		});
 	}
 
-	// Resume tabs (WAI-ARIA tabs pattern)
 	var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
 	function select(tab) {
 		tabs.forEach(function (t) {

@@ -47,6 +47,9 @@ a:hover { text-decoration: underline; }
 h1, h2, h3 { line-height: 1.2; margin: 0; }
 h2 { font-size: clamp(1.6rem, 3vw, 2.1rem); margin: .3rem 0 2rem; }
 p { margin: 0 0 1rem; color: var(--muted); }
+/* Justified body text; hyphens stop wide gaps on narrow screens */
+p, .role li, .cs-body li { text-align: justify; -webkit-hyphens: auto; hyphens: auto; }
+.contact p, .cs-end p, .foot p, .q-more { text-align: center; }
 
 .wrap { width: min(1120px, 100% - 40px); margin-inline: auto; }
 .sec { padding: 96px 0; }
